@@ -46,6 +46,6 @@ Route::group(['prefix' => 'users', 'as' => 'users', 'middleware' => 'auth'], fun
     Route::get('/riwayat', [UserController::class, 'riwayat']);
     Route::get('/profil', [UserController::class, 'profil']);
     Route::get('/keranjang', [UserController::class, 'keranjang']);
-    Route::get('/detailbuku', [UserController::class, 'detailbuku']);
+    Route::get('/detailbuku/{id}', [UserController::class, 'detailbuku']);
 });
 

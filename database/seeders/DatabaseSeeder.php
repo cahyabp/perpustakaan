@@ -3,6 +3,9 @@
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+
+use App\Models\Book;
+use App\Models\Category;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -34,5 +37,9 @@ class DatabaseSeeder extends Seeder
             'role'=> 'user',
             'avatar'=> 'default_avatar.jpg',
         ]);
+
+       
+        Category::factory()->count(10)->create();
+        Book::factory()->count(10)->create();
     }
 }
