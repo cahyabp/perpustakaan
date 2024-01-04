@@ -33,22 +33,25 @@
                             No.
                         </th>
                         <th scope="col" class="px-6 py-3">
-                            Video
+                            Judul Buku
                         </th>
                         <th scope="col" class="px-6 py-3">
-                            URL
+                            Tanggal Peminjaman
                         </th>
                         <th scope="col" class="px-6 py-3">
-                            Judul Video
+                            Batas Pengembalian
                         </th>
                         <th scope="col" class="px-6 py-3">
-                            Penerbit
+                            Tanggal Pengembalian
                         </th>
                         <th scope="col" class="px-6 py-3">
-                            Tahun Terbit
+                            Denda
                         </th>
                         <th scope="col" class="px-6 py-3">
-                            Aksi
+                            Status
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            Opsi
                         </th>
                     </tr>
                 </thead>
@@ -72,81 +75,18 @@
                         <td class="px-6 py-4">
                             $2999
                         </td>
-                        <td class="flex items-center px-6 py-4">
-                            <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
-                            <a href="#" class="font-medium text-red-600 dark:text-red-500 hover:underline ms-3">Remove</a>
-                        </td>
-                    </tr>
-                    <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                            2
-                        </th>
                         <td class="px-6 py-4">
-                            White
-                        </td>
-                        <td class="px-6 py-4">
-                            Laptop PC
-                        </td>
-                        <td class="px-6 py-4">
-                            No
-                        </td>
-                        <td class="px-6 py-4">
-                            Yes
-                        </td>
-                        <td class="px-6 py-4">
-                            $1999
+                            <span class="inline-flex items-center bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">
+                                <span class="w-2 h-2 me-1 bg-green-500 rounded-full"></span>
+                                Dikembalikan
+                            </span>
+                            <span class="inline-flex items-center bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-red-900 dark:text-red-300">
+                                <span class="w-2 h-2 me-1 bg-red-500 rounded-full"></span>
+                                Dipinjam
+                            </span>
                         </td>
                         <td class="flex items-center px-6 py-4">
-                            <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
-                            <a href="#" class="font-medium text-red-600 dark:text-red-500 hover:underline ms-3">Remove</a>
-                        </td>
-                    </tr>
-                    <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                            3
-                        </th>
-                        <td class="px-6 py-4">
-                            Black
-                        </td>
-                        <td class="px-6 py-4">
-                            Accessories
-                        </td>
-                        <td class="px-6 py-4">
-                            Yes
-                        </td>
-                        <td class="px-6 py-4">
-                            No
-                        </td>
-                        <td class="px-6 py-4">
-                            $99
-                        </td>
-                        <td class="flex items-center px-6 py-4">
-                            <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
-                            <a href="#" class="font-medium text-red-600 dark:text-red-500 hover:underline ms-3">Remove</a>
-                        </td>
-                    </tr>
-                    <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                            4
-                        </th>
-                        <td class="px-6 py-4">
-                            Black
-                        </td>
-                        <td class="px-6 py-4">
-                            Watches
-                        </td>
-                        <td class="px-6 py-4">
-                            Yes
-                        </td>
-                        <td class="px-6 py-4">
-                            No
-                        </td>
-                        <td class="px-6 py-4">
-                            $199
-                        </td>
-                        <td class="flex items-center px-6 py-4">
-                            <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
-                            <a href="#" class="font-medium text-red-600 dark:text-red-500 hover:underline ms-3">Remove</a>
+                            Generate
                         </td>
                     </tr>
                 </tbody>
