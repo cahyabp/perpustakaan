@@ -22,4 +22,9 @@ class Category extends Model
             get: fn ($value) => asset('/storage/categories/' .$value),
         );
     }
+
+    public function books()
+    {
+        return $this->hasMany(Book::class);
+    }
 }
