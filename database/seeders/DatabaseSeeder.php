@@ -6,7 +6,10 @@ namespace Database\Seeders;
 
 use App\Models\Book;
 use App\Models\Category;
+use App\Models\Transaction;
+use App\Models\Video;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
@@ -35,11 +38,19 @@ class DatabaseSeeder extends Seeder
             'email' => 'user@gmail.com',
             'password'=> Hash::make('user123'),
             'role'=> 'user',
-            'avatar'=> 'default_avatar.jpg',
+            'avatar' => 'https://picsum.photos/500/200', // Example image URL
+            'jenis_kelamin' => 'laki - laki',
+            'tanggal_lahir' => Carbon::now(),
+            'kelas' => 'X',
+            'nis' => '##########', // Example 10-digit number
+            'nik' => '############', // Example 13-digit number
+            'alamat' => 'address'
         ]);
 
        
         Category::factory()->count(10)->create();
         Book::factory()->count(10)->create();
+        Transaction::factory()->count(10)->create();
+        Video::factory()->count(5)->create();
     }
 }

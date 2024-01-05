@@ -31,10 +31,11 @@ Route::group(['prefix' => 'admin', 'as' => 'admin', 'middleware' => 'auth'], fun
     Route::get('/pelaporan', [DashboardController::class, 'pelaporan']);
     Route::get('/tambahbuku', [DashboardController::class, 'tambahbuku']);
     Route::get('/tambahvideo', [DashboardController::class, 'tambahvideo']);
-    Route::get('/editbuku', [DashboardController::class, 'editbuku']);
+    Route::get('/editbuku/{id}', [DashboardController::class, 'editbuku']);
     Route::get('/editvideo', [DashboardController::class, 'editvideo']);
     Route::get('/tambahpeminjaman', [DashboardController::class, 'tambahpeminjaman']);
     Route::get('/editpinjaman', [DashboardController::class, 'editpinjaman']);
+    Route::get('/get-chart-data', [DashboardController::class, 'getDataChartAdmin'])->name('getChartData');
 });
 
 Route::group(['prefix' => 'users', 'as' => 'users', 'middleware' => 'auth'], function () {
@@ -48,4 +49,3 @@ Route::group(['prefix' => 'users', 'as' => 'users', 'middleware' => 'auth'], fun
     Route::get('/keranjang', [UserController::class, 'keranjang']);
     Route::get('/detailbuku/{id}', [UserController::class, 'detailbuku']);
 });
-

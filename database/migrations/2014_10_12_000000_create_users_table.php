@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -19,6 +18,12 @@ return new class extends Migration
             $table->string('password');
             $table->enum('role', ['admin', 'user'])->default('user');
             $table->string('avatar')->nullable();
+            $table->enum('jenis_kelamin', ['laki - laki', 'perempuan'])->nullable();
+            $table->date('tanggal_lahir')->nullable();
+            $table->string('kelas')->nullable();
+            $table->string('nis')->nullable();
+            $table->string('nik')->nullable();
+            $table->string('alamat')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

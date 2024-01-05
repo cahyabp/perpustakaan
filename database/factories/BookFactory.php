@@ -25,6 +25,7 @@ class BookFactory extends Factory
             'uraian' => $this->faker->paragraph,
             'isbn' => $this->faker->isbn13,
             'stock' => $this->faker->numberBetween(1, 100),
+            'tahun_terbit' => $this->faker->year(),
             'sumber' => $this->faker->word,
             'kode_tempat' => $this->faker->unique()->regexify('[A-Z0-9]{10}'),
         ];

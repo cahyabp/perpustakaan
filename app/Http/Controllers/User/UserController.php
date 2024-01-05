@@ -5,6 +5,9 @@ namespace App\Http\Controllers\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Book;
+use App\Models\Transaction;
+use App\Models\Video;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
@@ -16,17 +19,28 @@ class UserController extends Controller
 
     public function video()
     {
-        return view('user.dashboard.video');
+        $videos = Video::all();
+        return view('user.dashboard.video', compact('videos'));
     }
     public function buku()
     {
         $books = Book::all();
         $totalBook = Book::count();
-        return view('user.dashboard.buku', compact('books', 'totalBook'));
+
+        $transactionsWithBooks = Transaction::with('book')
+            ->where('user_id', Auth::user()->id)
+            ->get();
+
+        $bukuMelewatiMasaPengembalian = $transactionsWithBooks->filter(function ($transaction) {
+            return $transaction->batas_pengembalian < Carbon::now();
+        });
+
+        return view('user.dashboard.buku', compact('books', 'totalBook', 'bukuMelewatiMasaPengembalian'));
     }
     public function riwayat()
     {
-        return view('user.dashboard.riwayat');
+        $transactions = Transaction::where('user_id', Auth::user()->id)->get();
+        return view('user.dashboard.riwayat', compact('transactions'));
     }
     public function profil()
     {

@@ -22,7 +22,8 @@ return new class extends Migration
             $table->string('isbn');
             $table->integer('stock');
             $table->string('sumber');
-            $table->string('kode_tempat');
+            $table->string('tahun_terbit');
+            $table->string('kode_tempat')->unique();
             $table->timestamps();
 
             $table->foreign('category_id')->on('categories')->references('id')->onDelete('cascade');;

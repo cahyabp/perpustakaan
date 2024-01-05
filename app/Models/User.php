@@ -11,7 +11,6 @@ use Laravel\Sanctum\HasApiTokens;
 // import
 use Illuminate\Database\Eloquent\Casts\Attribute;
 
-
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
@@ -56,5 +55,10 @@ class User extends Authenticatable
         return Attribute::make(
             get: fn ($value) => $value != '' ? asset('/storage/avatar' . $value) : 'https://ui-avatar.com/api/?name=' . str_replace(' ', '+', $this->name) . '&background=4e73df&color=ffffff&size=100',
         );
+    }
+
+    public function transactions()
+    {
+        return $this->hasMany(Transaction::class);
     }
 }
