@@ -60,7 +60,7 @@
             // Tambahkan event listener untuk menanggapi klik tombol
             tambahPeminjaman.addEventListener('click', function() {
                 // Arahkan pengguna ke halaman tambah buku dengan Laravel URL
-                window.location.href = '{{ url(' / admin / tambahpeminjaman ') }}';
+                window.location.href = '{{ url('/admin/tambahpeminjaman') }}';
             });
         </script>
 
