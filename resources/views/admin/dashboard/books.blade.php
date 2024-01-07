@@ -26,7 +26,7 @@
             // Tambahkan event listener untuk menanggapi klik tombol
             tambahBukuBtn.addEventListener('click', function() {
                 // Arahkan pengguna ke halaman tambah buku dengan Laravel URL
-                window.location.href = '{{ url(' / admin / tambahbuku ') }}';
+                window.location.href = '{{ url('/admin/tambahbuku') }}';
             });
         </script>
 
