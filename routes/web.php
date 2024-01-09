@@ -30,9 +30,13 @@ Route::group(['prefix' => 'admin', 'as' => 'admin', 'middleware' => 'auth'], fun
     Route::get('/peminjam', [DashboardController::class, 'peminjam']);
     Route::get('/pelaporan', [DashboardController::class, 'pelaporan']);
     Route::get('/tambahbuku', [DashboardController::class, 'tambahbuku']);
+    Route::post('/createbook', [DashboardController::class, 'createBook'])->name('createBook');
     Route::get('/tambahvideo', [DashboardController::class, 'tambahvideo']);
+    Route::post('/tambahvideo', [DashboardController::class, 'createVideo'])->name('createVideo');
     Route::get('/editbuku/{id}', [DashboardController::class, 'editbuku']);
-    Route::get('/editvideo', [DashboardController::class, 'editvideo']);
+    Route::put('/editbuku/{id}', [DashboardController::class, 'editBook'])->name('editBook');
+    Route::get('/editvideo/{id}', [DashboardController::class, 'editvideo']);
+    Route::put('/editvideo/{id}', [DashboardController::class, 'edit_video'])->name('editVideo');
     Route::get('/tambahpeminjaman', [DashboardController::class, 'tambahpeminjaman']);
     Route::get('/editpinjaman', [DashboardController::class, 'editpinjaman']);
     Route::get('/get-chart-data', [DashboardController::class, 'getDataChartAdmin'])->name('getChartData');

@@ -26,7 +26,7 @@
             // Tambahkan event listener untuk menanggapi klik tombol
             tambahVideoBtn.addEventListener('click', function() {
                 // Arahkan pengguna ke halaman tambah buku dengan Laravel URL
-                window.location.href = '{{ url('/admin/tambahvideo') }}';
+                window.location.href = '/admin/tambahvideo';
             });
         </script>
 
@@ -138,7 +138,7 @@
                             {{ $item->tahun_terbit }}
                         </td>
                         <td class="flex items-center px-6 py-4">
-                            <a href="/admin/editvideo"
+                            <a href="/admin/editvideo/{{$item->id}}"
                                 class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
                             <a href="#"
                                 class="font-medium text-red-600 dark:text-red-500 hover:underline ms-3">Remove</a>

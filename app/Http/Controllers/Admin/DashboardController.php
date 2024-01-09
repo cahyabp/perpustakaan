@@ -5,12 +5,15 @@ namespace App\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Book;
+use App\Models\Category;
 use App\Models\Transaction;
 use App\Models\User;
 use App\Models\Video;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\ValidationException;
 
 class DashboardController extends Controller
 {
@@ -36,14 +39,43 @@ class DashboardController extends Controller
     }
     public function show()
     {
-        $books = Book::all();
+        $books = Book::orderBy('created_at', 'DESC')->get();
         return view('admin.dashboard.books', compact('books'));
     }
     public function video()
     {
-        $videos = Video::all();
+        $videos = Video::orderBy('created_at', 'DESC')->get();
         return view('admin.dashboard.video', compact('videos'));
     }
+
+    public function createVideo(Request $request)
+    {
+
+        $validateData = $request->validate([
+            'judul'        => 'required|string|max:255',
+            'penerbit'     => 'required|string|max:255',
+            'author'       => 'required|string|max:255',
+            'tahun_terbit' => 'required|string|max:4',
+            'url'          => 'required|url|max:255',
+        ]);
+
+        $videoId = trim(parse_url($validateData['url'], PHP_URL_PATH), '/');
+        $embedUrl = "https://www.youtube.com/embed/{$videoId}";
+
+        if ($query = parse_url($validateData['url'], PHP_URL_QUERY)) {
+            $embedUrl .= '?' . $query;
+        }
+
+        $validateData['user_id'] = Auth::user()->id;
+        $validateData['url'] = $embedUrl;
+
+        Video::create($validateData);
+
+        return redirect()->back()->with('sukses', true);
+
+
+    }
+
     public function keanggotaan()
     {
         $users = User::where('role', 'user')->get();
@@ -56,8 +88,6 @@ class DashboardController extends Controller
     }
     public function pelaporan()
     {
-        $startDate = Carbon::now()->startOfMonth();
-        $endDate = Carbon::now()->endOfMonth();
         $monthsArray = Carbon::now()->startOfYear()->monthsUntil(Carbon::now()->endOfYear())->toArray();
 
 
@@ -83,12 +113,12 @@ class DashboardController extends Controller
 
 
         $bukuBelumDikembalikan = collect($monthsArray)->map(function ($date) {
-    return Transaction::join('books', 'transactions.book_id', '=', 'books.id')
-        ->whereMonth('transactions.created_at', $date)
-        ->where('transactions.status', 'dipinjam')
-        ->whereDate('transactions.batas_pengembalian', '<', now())
-        ->count();
-});
+            return Transaction::join('books', 'transactions.book_id', '=', 'books.id')
+                ->whereMonth('transactions.created_at', $date)
+                ->where('transactions.status', 'dipinjam')
+                ->whereDate('transactions.batas_pengembalian', '<', now())
+                ->count();
+        });
         $popularBooks = Transaction::select('books.judul', 'books.id as book_id', DB::raw('COUNT(*) as total_pinjam'))
                     ->join('books', 'transactions.book_id', '=', 'books.id')
                     ->whereMonth('transactions.created_at', Carbon::now()->month)
@@ -105,8 +135,35 @@ class DashboardController extends Controller
 
     public function tambahbuku()
     {
-        return view('admin.dashboard.tambahbuku');
+        $categories = Category::all();
+        return view('admin.dashboard.tambahbuku', compact('categories'));
     }
+
+    public function createBook(Request $request)
+    {
+        $validateData = $request->validate([
+            'category_id'   => 'required|exists:categories,id',
+            'judul'         => 'required|string|max:255',
+            'penulis'       => 'required|string|max:255',
+            'penerbit'      => 'required|string|max:255',
+            'uraian'        => 'required|string',
+            'isbn'          => 'required|string|max:20',
+            'stock'         => 'required|integer|min:0',
+            'sumber'        => 'required|string|max:255',
+            'tahun_terbit'  => 'required|string|max:4',
+            'kode_tempat'   => 'required|string|max:255',
+            'image'         => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+
+        if($request->file('image')) {
+            $validateData['image'] = $request->file('image')->store('images', 'public');
+        }
+
+        Book::create($validateData);
+
+        return redirect()->back()->with('sukses', true);
+    }
+
     public function tambahvideo()
     {
         return view('admin.dashboard.tambahvideo');
@@ -114,12 +171,81 @@ class DashboardController extends Controller
     public function editbuku(Book $book, $id)
     {
         $book = Book::find($id);
-        return view('admin.dashboard.editbuku', compact('book'));
+        $categories = Category::all();
+
+        return view('admin.dashboard.editbuku', compact('book', 'categories'));
     }
-    public function editvideo()
+
+    public function editBook(Request $request, $id)
     {
-        return view('admin.dashboard.editvideo');
+        try {
+            $validateData = $request->validate([
+                'category_id'   => 'required|exists:categories,id',
+                'judul'         => 'string|max:255',
+                'penulis'       => 'string|max:255',
+                'penerbit'      => 'string|max:255',
+                'uraian'        => 'string',
+                'isbn'          => 'string|max:20',
+                'stock'         => 'integer|min:0',
+                'sumber'        => 'string|max:255',
+                'tahun_terbit'  => 'integer',
+                'kode_tempat'   => 'string|max:255',
+                'image'         => 'image|mimes:jpeg,png,jpg,gif|max:2048',
+            ]);
+
+            $book = Book::find($id);
+
+            if($request->file('image')) {
+                Storage::disk('public')->delete($book->image);
+                $validateData['image'] = $request->file('image')->store('images', 'public');
+            }
+
+            Book::where('id', $id)->update($validateData);
+
+            return redirect()->back()->with('sukses', true);
+
+
+        } catch (ValidationException $e) {
+            return response()->json(['errors' => $e->validator->errors()], 422);
+        }
     }
+
+    public function editvideo($id)
+    {
+        $video = Video::find($id);
+        return view('admin.dashboard.editvideo', compact('video'));
+    }
+
+    public function edit_video(Request $request, $id)
+    {
+        try {
+            $validateData = $request->validate([
+              'judul'        => 'required|string|max:255',
+              'penerbit'     => 'required|string|max:255',
+              'author'       => 'required|string|max:255',
+              'tahun_terbit' => 'required|string|max:4',
+              'url'          => 'required|url|max:255',
+          ]);
+
+            $videoId = trim(parse_url($validateData['url'], PHP_URL_PATH), '/');
+            $embedUrl = "https://www.youtube.com/embed/{$videoId}";
+
+            if ($query = parse_url($validateData['url'], PHP_URL_QUERY)) {
+                $embedUrl .= '?' . $query;
+            }
+
+            $validateData['user_id'] = Auth::user()->id;
+            $validateData['url'] = $embedUrl;
+
+            Video::where('id', $id)->update($validateData);
+
+            return redirect()->back()->with('sukses', true);
+        } catch (ValidationException $e) {
+            return response()->json(['errors' => $e->validator->errors()], 422);
+        }
+   
+    }
+
     public function tambahpeminjaman()
     {
         return view('admin.dashboard.tambahpeminjaman');

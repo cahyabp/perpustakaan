@@ -26,7 +26,7 @@
             // Tambahkan event listener untuk menanggapi klik tombol
             tambahBukuBtn.addEventListener('click', function() {
                 // Arahkan pengguna ke halaman tambah buku dengan Laravel URL
-                window.location.href = '{{ url('/admin/tambahbuku') }}';
+                window.location.href = '/admin/tambahbuku';
             });
         </script>
 
@@ -138,7 +138,11 @@
                             {{ $index + 1 }}
                         </th>
                         <td class="px-6 py-4">
+                            @if(Str::contains($item->image, 'via'))
                             <img src="{{ $item->image }}" width="100%" height="300" alt="">
+                            @else
+                            <img src="{{ asset('storage/' . $item->image) }}" width="100%" height="300" alt="">
+                            @endif
                         </td>
                         <td class="px-6 py-4">
                             {{ $item->judul }}
@@ -159,7 +163,7 @@
                             {{ $item->uraian }}
                         </td>
                         <td class="px-6 py-4">
-                            Yes
+                            {{ $item->tahun_terbit }}
                         </td>
                         <td class="px-6 py-4">
                             {{ $item->isbn }}

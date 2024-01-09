@@ -19,12 +19,12 @@ class UserController extends Controller
 
     public function video()
     {
-        $videos = Video::all();
+        $videos = Video::orderBy('created_at', 'DESC')->get();
         return view('user.dashboard.video', compact('videos'));
     }
     public function buku()
     {
-        $books = Book::all();
+        $books = Book::orderBy('created_at', 'DESC')->get();
         $totalBook = Book::count();
 
         $transactionsWithBooks = Transaction::with('book')
