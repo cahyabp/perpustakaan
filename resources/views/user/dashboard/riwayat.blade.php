@@ -86,11 +86,7 @@
                             {{ $item->tanggal_pengembalian }}
                         </td>
                         <td class="px-6 py-4">
-                            @if($item->batas_pengembalian < now())
-                                Rp. 5.000.00
-                            @else
-                            -
-                            @endif
+                            {{ $item->denda }}
                         </td>
                         <td class="px-6 py-4">
                             @if($item->status === 'dikembalikan')
@@ -99,11 +95,17 @@
                                 <span class="w-2 h-2 me-1 bg-green-500 rounded-full"></span>
                                 Dikembalikan
                             </span>
-                            @else
+                            @elseif($item->status === 'dipinjam')
                             <span
                                 class="inline-flex items-center bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-red-900 dark:text-red-300">
                                 <span class="w-2 h-2 me-1 bg-red-500 rounded-full"></span>
                                 Dipinjam
+                            </span>
+                            @else
+                            <span
+                                class="inline-flex items-center bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-red-900 dark:text-red-300">
+                                <span class="w-2 h-2 me-1 bg-red-500 rounded-full"></span>
+                                Menunggu Konfirmasi
                             </span>
                             @endif
                         </td>
@@ -114,6 +116,9 @@
                     @endforeach
                 </tbody>
             </table>
+            <div class="mt-5">
+                {{ $transactions->links() }}
+            </div>
         </div>
 
     </main>

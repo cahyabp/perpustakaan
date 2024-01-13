@@ -60,7 +60,7 @@
             // Tambahkan event listener untuk menanggapi klik tombol
             tambahPeminjaman.addEventListener('click', function() {
                 // Arahkan pengguna ke halaman tambah buku dengan Laravel URL
-                window.location.href = '{{ url('/admin/tambahpeminjaman') }}';
+                window.location.href = '{{ url(' / admin / tambahpeminjaman ') }}';
             });
         </script>
 
@@ -196,16 +196,22 @@
                                 <span class="w-2 h-2 me-1 bg-green-500 rounded-full"></span>
                                 Dipinjam
                             </span>
-                            @else
+                            @elseif($item->status === 'dikembalikan')
                             <span
                                 class="inline-flex items-center bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-red-900 dark:text-red-300">
                                 <span class="w-2 h-2 me-1 bg-red-500 rounded-full"></span>
                                 DIkembalikan
                             </span>
+                            @else
+                            <span
+                                class="inline-flex items-center bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-red-900 dark:text-red-300">
+                                <span class="w-2 h-2 me-1 bg-red-500 rounded-full"></span>
+                                Menunggu Konfirmasi
+                            </span>
                             @endif
                         </td>
                         <td class="flex items-center px-6 py-4">
-                            <a href="/admin/editpinjaman"
+                            <a href="/admin/editpinjaman/{{$item->id}}"
                                 class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
                             <a href="#"
                                 class="font-medium text-red-600 dark:text-red-500 hover:underline ms-3">Remove</a>
@@ -214,6 +220,9 @@
                     @endforeach
                 </tbody>
             </table>
+            <div class="mt-3">
+                {{ $transactions->links() }}
+            </div>
         </div>
 
 

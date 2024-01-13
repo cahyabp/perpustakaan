@@ -39,12 +39,12 @@ class DashboardController extends Controller
     }
     public function show()
     {
-        $books = Book::orderBy('created_at', 'DESC')->get();
+        $books = Book::orderBy('created_at', 'DESC')->paginate(5);
         return view('admin.dashboard.books', compact('books'));
     }
     public function video()
     {
-        $videos = Video::orderBy('created_at', 'DESC')->get();
+        $videos = Video::orderBy('created_at', 'DESC')->paginate(5);
         return view('admin.dashboard.video', compact('videos'));
     }
 
@@ -83,7 +83,7 @@ class DashboardController extends Controller
     }
     public function peminjam()
     {
-        $transactions = Transaction::all();
+        $transactions = Transaction::orderBy('created_at')->paginate(5);
         return view('admin.dashboard.peminjam', compact('transactions'));
     }
     public function pelaporan()
@@ -250,8 +250,21 @@ class DashboardController extends Controller
     {
         return view('admin.dashboard.tambahpeminjaman');
     }
-    public function editpinjaman()
+    public function editpinjaman($id)
     {
-        return view('admin.dashboard.editpinjaman');
+        $data = Transaction::find($id);
+        return view('admin.dashboard.editpinjaman', compact('data'));
+    }
+
+    public function updatePinjaman(Request $request, $id)
+    {
+        $validateData = $request->validate([
+            'status' => 'string'
+        ]);
+
+        Transaction::where('id', $id)->update($validateData);
+
+        return redirect()->back()->with('sukses', true);
+
     }
 }

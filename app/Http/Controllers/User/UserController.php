@@ -5,10 +5,13 @@ namespace App\Http\Controllers\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Book;
+use App\Models\Cart;
 use App\Models\Transaction;
+use App\Models\User;
 use App\Models\Video;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
@@ -29,30 +32,118 @@ class UserController extends Controller
 
         $transactionsWithBooks = Transaction::with('book')
             ->where('user_id', Auth::user()->id)
+            ->where('status', 'dipinjam')
             ->get();
 
         $bukuMelewatiMasaPengembalian = $transactionsWithBooks->filter(function ($transaction) {
-            return $transaction->batas_pengembalian < Carbon::now();
+            try {
+                $batasPengembalian = Carbon::createFromFormat('d/m/Y', $transaction->batas_pengembalian);
+        
+                return $batasPengembalian->isPast();
+            } catch (\Exception $e) {
+                // Handle any date format exceptions here
+                return false; // If there's an exception, consider the date not past
+            }
+        })->map(function ($transaction) {
+            return $transaction->book;
         });
 
         return view('user.dashboard.buku', compact('books', 'totalBook', 'bukuMelewatiMasaPengembalian'));
     }
     public function riwayat()
     {
-        $transactions = Transaction::where('user_id', Auth::user()->id)->get();
+        $transactions = Transaction::where('user_id', Auth::user()->id)->orderBy('created_at', 'DESC')->paginate(5);
         return view('user.dashboard.riwayat', compact('transactions'));
     }
     public function profil()
     {
-        return view('user.dashboard.profil');
+        $user = User::where('id', Auth::user()->id)->first();
+        return view('user.dashboard.profil', compact('user'));
     }
+
+    public function updateProfil(Request $request)
+    {
+        $validator = $request->validate([
+            'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif', // Example for an image upload
+            'jenis_kelamin' => 'nullable|in:laki - laki,perempuan',
+            'tanggal_lahir' => 'nullable|date',
+            'kelas' => 'nullable|string|max:255',
+            'nis' => 'nullable|string|max:255',
+            'nik' => 'nullable|string|max:255',
+            'alamat' => 'nullable|string|max:255',
+        ]);
+
+
+        if ($request->hasFile('avatar')) {
+            $path = $request->file('avatar')->store('avatars', 'public');
+            $validator['avatar'] = $path;
+        }
+
+        User::where('id', Auth::user()->id)->update($validator);
+        return redirect()->back()->with('sukses', true);
+    }
+
+
     public function keranjang()
     {
-        return view('user.dashboard.keranjang');
+        $carts = Cart::where('user_id', Auth::user()->id)->orderBy('created_at', 'DESC')->get();
+        return view('user.dashboard.keranjang', compact('carts'));
     }
+
+    public function removeBookFromCart($id)
+    {
+        Cart::where('id', $id)->delete();
+        return redirect()->back()->with('sukses', true);
+    }
+    public function addBookToCart(Request $request, $id)
+    {
+        $bookInCart = Cart::where('user_id', Auth::user()->id)->where('book_id', $id)->count();
+        if($bookInCart > 0) {
+            return redirect()->back()->with('bukuSudahDiKeranjang', true);
+        }
+
+        
+        Cart::create([
+         'tanggal_pinjam' => $request->tanggal_pinjam,
+         'tanggal_pengembalian' => $request->tanggal_pengembalian,
+         'user_id' => Auth::user()->id,
+         'book_id' => $id
+        ]);
+        return redirect()->back()->with('sukses', true);
+    }
+
     public function detailbuku(Book $book, $id)
     {
         $book = Book::find($id);
-        return view('user.dashboard.detailbuku', compact('book'));
+        $cartFull = Cart::where('user_id', Auth::user()->id)->count() === 2;
+        $bukuBelumDikembalikan = Transaction::where('user_id', Auth::user()->id)
+    ->where('status', 'dipinjam')
+    ->where('batas_pengembalian', '<', Carbon::now()->format('d/m/Y'))
+    ->get();
+
+
+        return view('user.dashboard.detailbuku', compact('book', 'cartFull', 'bukuBelumDikembalikan'));
+    }
+
+    public function checkout()
+    {
+        $booksInCart = Cart::where('user_id', Auth::user()->id)->get();
+        foreach ($booksInCart as $book) {
+            Transaction::create([
+                'user_id' => Auth::user()->id,
+                'book_id' => $book->book_id,
+                'tanggal_peminjaman' => $book->tanggal_pinjam,
+                'tanggal_pengembalian' => $book->tanggal_pengembalian,
+                'batas_pengembalian' => $book->tanggal_pengembalian
+            ]);
+        }
+
+
+        Cart::where('user_id', Auth::user()->id)->delete();
+
+
+        return redirect()->back()->with('suksesCheckout', true);
+
+
     }
 }

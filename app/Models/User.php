@@ -49,14 +49,6 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    // Buat method untuk fitur Mutator
-    protected function avatar(): Attribute
-    {
-        return Attribute::make(
-            get: fn ($value) => $value != '' ? asset('/storage/avatar' . $value) : 'https://ui-avatar.com/api/?name=' . str_replace(' ', '+', $this->name) . '&background=4e73df&color=ffffff&size=100',
-        );
-    }
-
     public function transactions()
     {
         return $this->hasMany(Transaction::class);

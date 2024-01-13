@@ -38,7 +38,8 @@ Route::group(['prefix' => 'admin', 'as' => 'admin', 'middleware' => 'auth'], fun
     Route::get('/editvideo/{id}', [DashboardController::class, 'editvideo']);
     Route::put('/editvideo/{id}', [DashboardController::class, 'edit_video'])->name('editVideo');
     Route::get('/tambahpeminjaman', [DashboardController::class, 'tambahpeminjaman']);
-    Route::get('/editpinjaman', [DashboardController::class, 'editpinjaman']);
+    Route::get('/editpinjaman/{id}', [DashboardController::class, 'editpinjaman']);
+    Route::post('/editpinjaman/{id}', [DashboardController::class, 'updatePinjaman'])->name('updatePinjaman');
     Route::get('/get-chart-data', [DashboardController::class, 'getDataChartAdmin'])->name('getChartData');
 });
 
@@ -50,6 +51,13 @@ Route::group(['prefix' => 'users', 'as' => 'users', 'middleware' => 'auth'], fun
     Route::get('/buku', [UserController::class, 'buku']);
     Route::get('/riwayat', [UserController::class, 'riwayat']);
     Route::get('/profil', [UserController::class, 'profil']);
+    Route::post('/profil', [UserController::class, 'updateProfil'])->name('updateProfile');
     Route::get('/keranjang', [UserController::class, 'keranjang']);
     Route::get('/detailbuku/{id}', [UserController::class, 'detailbuku']);
+
+    Route::get('/pinjam-buku/{id}', [UserController::class, 'pinjamBuku'])->name('pinjamBuku');
+    Route::post('/tambah-ke-keranjang/{id}', [UserController::class, 'addBookToCart'])->name('addBookToCart');
+    Route::post('/remove-cart/{id}', [UserController::class, 'removeBookFromCart'])->name('removeBookFromCart');
+    Route::get('/pesan-buku', [UserController::class, 'checkout'])->name('checkout');
+
 });

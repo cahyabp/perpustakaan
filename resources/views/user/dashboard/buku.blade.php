@@ -25,10 +25,10 @@
             </div>
         </div>
 
-        @if($bukuMelewatiMasaPengembalian->count() > 0)
+        @if(!empty($bukuMelewatiMasaPengembalian))
         @foreach($bukuMelewatiMasaPengembalian as $item)
         <div class="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
-            <span class="font-medium">Peringatan!!</span> Buku <strong> {{ $item->book->judul }}</strong> Telah Melewati
+            <span class="font-medium">Peringatan!!</span> Buku <strong> {{ $item->judul }}</strong> Telah Melewati
             Batas
             Pengembalian
         </div>
@@ -37,7 +37,7 @@
 
         <div class="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             @foreach($books as $book)
-            <div
+            <!-- <div
                 class="max-w-md p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
                 @if(Str::contains($book->image, 'via'))
                 <img src="{{ $book->image }}" width="100%" height="300" alt="">
@@ -78,7 +78,52 @@
                     {{ $book->stock }}
                 </button>
                 {{ $book->category->nama_kategori }}
+            </div> -->
+
+
+            <div
+                class="max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+                @if(Str::contains($book->image, 'via'))
+                <img src="{{ $book->image }}" width="100%" height="300" alt="">
+                @else
+                <img src="{{ asset('storage/' . $book->image) }}" width="100%" height="300" alt="">
+                @endif
+                <div class="p-5">
+                    <a href="/users/detailbuku/{{ $book->id }}">
+                        <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+                            {{ $book->judul }}
+                        </h5>
+                    </a>
+                    <table class="w-full">
+                        <tr>
+                            <td class="" width='30%'>
+                                <p>Penerbit</p>
+                            </td>
+                            <td class="font-bold">
+                                {{ $book->penerbit }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="">
+                                <p>Stock</p>
+                            </td>
+                            <td class=" font-bold">
+                                {{ $book->stock }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="">
+                                <p>Kategori</p>
+                            </td>
+                            <td class=" font-bold">
+                                {{ $book->category->nama_kategori }}
+                            </td>
+                        </tr>
+                    </table>
+
+                </div>
             </div>
+
             @endforeach
         </div>
 

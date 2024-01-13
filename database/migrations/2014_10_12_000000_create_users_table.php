@@ -19,7 +19,7 @@ return new class extends Migration {
             $table->enum('role', ['admin', 'user'])->default('user');
             $table->string('avatar')->nullable();
             $table->enum('jenis_kelamin', ['laki - laki', 'perempuan'])->nullable();
-            $table->date('tanggal_lahir')->nullable();
+            $table->string('tanggal_lahir')->nullable();
             $table->string('kelas')->nullable();
             $table->string('nis')->nullable();
             $table->string('nik')->nullable();

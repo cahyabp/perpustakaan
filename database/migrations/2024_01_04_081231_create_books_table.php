@@ -17,7 +17,7 @@ return new class extends Migration {
             $table->string('judul');
             $table->string('penulis');
             $table->string('penerbit');
-            $table->string('uraian');
+            $table->text('uraian');
             $table->string('isbn');
             $table->integer('stock');
             $table->string('sumber');

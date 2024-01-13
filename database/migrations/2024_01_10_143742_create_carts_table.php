@@ -10,19 +10,16 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('transactions', function (Blueprint $table) {
+        Schema::create('carts', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('book_id');
-            $table->string('tanggal_peminjaman');
+            $table->string('tanggal_pinjam');
             $table->string('tanggal_pengembalian');
-            $table->string('batas_pengembalian');
-            $table->integer('denda')->default(0);
-            $table->enum('status', ['dikembalikan', 'dipinjam', 'menunggu konfirmasi'])->default('menunggu konfirmasi');
             $table->timestamps();
 
-            $table->foreign('user_id')->on('users')->references('id')->onDelete('cascade');
-            $table->foreign('book_id')->on('books')->references('id')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('book_id')->references('id')->on('books')->onDelete('cascade');
         });
     }
 
@@ -31,6 +28,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('transactions');
+        Schema::dropIfExists('carts');
     }
 };
