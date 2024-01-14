@@ -31,7 +31,7 @@
                                 d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
                         </svg>
                     </div>
-                    <input type="text" id="table-search-users"
+                    <input type="text" id="search"
                         class="block pl-7 p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         placeholder="Search for users">
                 </div>
@@ -66,7 +66,7 @@
                         </th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody id="defaultRiwayat">
                     @foreach($transactions as $index => $item)
                     <tr
                         class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
@@ -115,6 +115,7 @@
                     </tr>
                     @endforeach
                 </tbody>
+                <tbody id="searchRiwayat"></tbody>
             </table>
             <div class="mt-5">
                 {{ $transactions->links() }}
@@ -123,4 +124,93 @@
 
     </main>
 </div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script>
+    $('#search').on('keyup', function() {
+        $value = $(this).val();
+
+
+        if ($value === '') {
+            $('#defaultRiwayat').show()
+            $('#searchRiwayat').hide()
+        } else {
+            $('#defaultRiwayat').hide()
+            $('#searchRiwayat').show()
+        }
+
+        $.ajax({
+            type: 'GET',
+            url: `{{ route('userssearchRiwayat') }}`,
+            data: {
+                'search': $value
+            },
+            success: function(data) {
+                var card = '';
+
+                if (data.length === 0) {
+                    return $('#searchRiwayat').html('<h1>Not Found</h1>');
+                }
+
+                $.each(data, function(index, item) {
+                    card += `
+                       <tr
+                        class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                           ${index + 1}
+                        </th>
+                        <td class="px-6 py-4">
+                            ${item.book.judul}
+                        </td>
+                        <td class="px-6 py-4">
+                             ${item.tanggal_peminjaman}
+                        </td>
+                        <td class="px-6 py-4">
+                            ${item.batas_pengembalian}
+                        </td>
+                        <td class="px-6 py-4">
+                             ${item.tanggal_pengembalian ? item.tanggal_pengembalian : '-' }
+                        </td>
+                        <td class="px-6 py-4">
+                            ${item.denda}
+                        </td>
+                        <td class="px-6 py-4">
+                            @if($item->status === 'dikembalikan')
+                            <span
+                                class="inline-flex items-center bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">
+                                <span class="w-2 h-2 me-1 bg-green-500 rounded-full"></span>
+                                Dikembalikan
+                            </span>
+                            @elseif($item->status === 'dipinjam')
+                            <span
+                                class="inline-flex items-center bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-red-900 dark:text-red-300">
+                                <span class="w-2 h-2 me-1 bg-red-500 rounded-full"></span>
+                                Dipinjam
+                            </span>
+                            @else
+                            <span
+                                class="inline-flex items-center bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-red-900 dark:text-red-300">
+                                <span class="w-2 h-2 me-1 bg-red-500 rounded-full"></span>
+                                Menunggu Konfirmasi
+                            </span>
+                            @endif
+                        </td>
+                        <td class="flex items-center px-6 py-4">
+                            Generate
+                        </td>
+                    </tr>`
+                })
+
+                $('#searchRiwayat').html(card);
+
+            }
+        })
+    })
+</script>
+<script type="text/javascript">
+    $.ajaxSetup({
+        headers: {
+            'csrftoken': '{{ csrf_token() }}'
+        }
+    });
+</script>
 @endsection

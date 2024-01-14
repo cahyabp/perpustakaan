@@ -9,6 +9,7 @@ use App\Models\Category;
 use App\Models\Transaction;
 use App\Models\User;
 use App\Models\Video;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -17,6 +18,9 @@ use Illuminate\Validation\ValidationException;
 
 class DashboardController extends Controller
 {
+
+    private $data = [];
+
     // method untuk halaman index
     public function index()
     {
@@ -26,6 +30,19 @@ class DashboardController extends Controller
             $totalUser= User::where('role', 'user')->count();
             $totalPinjam = Transaction::where('status', 'dipinjam')->count();
             $totalDikembalikan =Transaction::where('status', 'dikembalikan')->count();
+
+            $transactions = Transaction::all();
+
+            foreach($transactions as $transaction) {
+                $batasPengembalian = Carbon::createFromFormat('d/m/Y', $transaction->batas_pengembalian);
+
+                if ($batasPengembalian->isPast()) {
+                    Transaction::where('id', $transaction->id)->update([
+                     'denda' => 5000
+                    ]);
+                }
+
+            }
 
             return view("admin.dashboard.index", compact('totalBook', 'totalUser', 'totalPinjam', 'totalDikembalikan'));
         } else {
@@ -78,7 +95,7 @@ class DashboardController extends Controller
 
     public function keanggotaan()
     {
-        $users = User::where('role', 'user')->get();
+        $users = User::where('role', 'user')->paginate(5);
         return view('admin.dashboard.keanggotaan', compact('users'));
     }
     public function peminjam()
@@ -88,22 +105,6 @@ class DashboardController extends Controller
     }
     public function pelaporan()
     {
-        $monthsArray = Carbon::now()->startOfYear()->monthsUntil(Carbon::now()->endOfYear())->toArray();
-
-
-        $popularBooks = collect($monthsArray)->map(function ($date) {
-            return Transaction::select('books.judul', 'books.id as book_id', DB::raw('COUNT(*) as total_transactions'))
-                    ->join('books', 'transactions.book_id', '=', 'books.id')
-                    ->whereMonth('transactions.created_at', $date)
-                    ->groupBy('books.id')
-                    ->orderBy('total_transactions', 'DESC')
-                    ->limit(3)
-                    ->get();
-
-        });
-
-
-
         return view('admin.dashboard.pelaporan');
     }
 
@@ -111,14 +112,13 @@ class DashboardController extends Controller
     {
         $monthsArray = Carbon::now()->startOfYear()->monthsUntil(Carbon::now()->endOfYear())->toArray();
 
-
         $bukuBelumDikembalikan = collect($monthsArray)->map(function ($date) {
-            return Transaction::join('books', 'transactions.book_id', '=', 'books.id')
-                ->whereMonth('transactions.created_at', $date)
-                ->where('transactions.status', 'dipinjam')
-                ->whereDate('transactions.batas_pengembalian', '<', now())
+            return Transaction::where('status', 'dipinjam')
+                ->whereMonth('created_at', $date)
+                ->where('batas_pengembalian', '<', now()->format('m/d/Y'))
                 ->count();
         });
+
         $popularBooks = Transaction::select('books.judul', 'books.id as book_id', DB::raw('COUNT(*) as total_pinjam'))
                     ->join('books', 'transactions.book_id', '=', 'books.id')
                     ->whereMonth('transactions.created_at', Carbon::now()->month)
@@ -259,12 +259,110 @@ class DashboardController extends Controller
     public function updatePinjaman(Request $request, $id)
     {
         $validateData = $request->validate([
-            'status' => 'string'
+            'status' => 'string',
+            'tanggal_pengembalian' => 'nullable|string'
         ]);
 
+
         Transaction::where('id', $id)->update($validateData);
+        
+
+        $transaction = Transaction::where('id', $id)->first();
+        if($validateData['status'] === 'dipinjam') {
+            $newStock = $transaction->book->stock - 1;
+            Book::where('id', $transaction->book->id)->update([
+                'stock' => $newStock
+            ]);
+        }
+
+        if($validateData['status'] === 'dikembalikan') {
+            $newStock = $transaction->book->stock + 1;
+            Book::where('id', $transaction->book->id)->update([
+                'stock' => $newStock
+            ]);
+        }
+
 
         return redirect()->back()->with('sukses', true);
 
     }
+
+    public function generatePDFPinjaman(Request $request)
+    {
+
+        $transactions = Transaction::whereBetween('batas_pengembalian', [$request->tanggal_peminjaman, $request->batas_pengembalian])->get();
+        $total_denda = $transactions->sum('denda');
+
+        $data = [
+           'pinjaman' => $transactions,
+           'total_denda' => $total_denda
+        ];
+
+
+        $pdf = Pdf::loadView('admin.dashboard.template-pinjaman', $data)->setOptions(['defaultFont' => 'sans-serif']);
+        return $pdf->stream('pinjaman.pdf');
+    }
+
+    public function searchBook(Request $request)
+    {
+        if($request->ajax()) {
+
+            $books = Book::where('judul', 'LIKE', '%' . $request->search . '%')
+                   ->whereHas('category')
+                   ->with('category') // Eager load the category relationship
+                   ->get();
+
+
+            return Response()->json($books);
+
+        }
+
+    }
+
+    public function searchVideo(Request $request)
+    {
+        if($request->ajax()) {
+
+            $videos = Video::where('judul', 'LIKE', '%' . $request->search . '%')
+                   ->whereHas('user')
+                   ->with('user') // Eager load the category relationship
+                   ->get();
+
+
+            return Response()->json($videos);
+
+        }
+
+    }
+
+    public function searchPeminjam(Request $request)
+    {
+        if($request->ajax()) {
+
+            $peminjam = Transaction::whereHas('user', function ($query) use ($request) {
+                $query->where('name', 'LIKE', '%' . $request->search . '%');
+            })
+                ->with(['user', 'book']) // Eager load both user and book relationships
+                ->get();
+                
+            return Response()->json($peminjam);
+
+        }
+
+    }
+
+    public function searchUser(Request $request)
+    {
+        if($request->ajax()) {
+
+            $users = User::where('role', 'user')->where('name', 'LIKE', '%' . $request->search . '%')
+                   ->get();
+
+
+            return Response()->json($users);
+
+        }
+
+    }
+
 }

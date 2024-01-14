@@ -58,7 +58,7 @@
                                 d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
                         </svg>
                     </div>
-                    <input type="text" id="table-search-users"
+                    <input type="text" id="search"
                         class="block pl-7 p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         placeholder="Search for users">
                 </div>
@@ -83,7 +83,7 @@
                         </th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody id="defaultUser">
                     @foreach($users as $index => $item)
                     <tr
                         class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
@@ -91,7 +91,7 @@
                             {{ $index + 1 }}
                         </th>
                         <td class="px-6 py-4">
-                            foto
+                            <img src="{{ asset('storage/' . $item->avatar) }}" class="w-36" alt="">
                         </td>
                         <td class="px-6 py-4">
                             {{ $item->name }}
@@ -105,7 +105,11 @@
                     </tr>
                     @endforeach
                 </tbody>
+                <tbody id="searchUser"></tbody>
             </table>
+            <div class="p-3" id="pagination">
+                {{ $users->links() }}
+            </div>
         </div>
 
 
@@ -115,4 +119,69 @@
         Copyright © Your Website 2023
     </footer> --}}
 </div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script>
+    $('#search').on('keyup', function() {
+        $value = $(this).val();
+
+
+        if ($value === '') {
+            $('#defaultUser').show()
+            $('#searchUser').hide()
+            $('#pagination').show()
+        } else {
+            $('#defaultUser').hide()
+            $('#searchUser').show()
+            $('#pagination').hide()
+        }
+
+        $.ajax({
+            type: 'GET',
+            url: `{{ route('adminsearchUser') }}`,
+            data: {
+                'search': $value
+            },
+            success: function(data) {
+                var card = '';
+
+                if (data.length === 0) {
+                    return $('#searchUser').html('<h1>Not Found</h1>');
+                }
+
+                $.each(data, function(index, item) {
+                    card += `
+                      <tr
+                        class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                            ${index + 1}
+                        </th>
+                        <td class="px-6 py-4">
+                            <img src="{{ asset('storage/' . $item->avatar) }}" class="w-36" alt="">
+                        </td>
+                        <td class="px-6 py-4">
+                        ${item.name}  
+                        </td>
+                        <td class="px-6 py-4">
+                         ${item.role}  
+                             </td>
+                        <td class="flex items-center px-6 py-4">
+                            <a href="#"
+                                class="font-medium text-red-600 dark:text-red-500 hover:underline ms-3">Remove</a>
+                        </td>
+                    </tr>`
+                })
+
+                $('#searchUser').html(card);
+
+            }
+        })
+    })
+</script>
+<script type="text/javascript">
+    $.ajaxSetup({
+        headers: {
+            'csrftoken': '{{ csrf_token() }}'
+        }
+    });
+</script>
 @endsection

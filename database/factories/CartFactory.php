@@ -21,7 +21,7 @@ class CartFactory extends Factory
                 'user_id' => $this->faker->numberBetween(1, 2),
                 'book_id' => $this->faker->numberBetween(1, 5),
                 'tanggal_pinjam' => Carbon::now()->format('d/m/Y'),
-                'tanggal_pengembalian' => Carbon::now()->addDays(7)->format('d/m/Y'),
+                'batas_pengembalian' => Carbon::now()->addDays(7)->format('d/m/Y'),
         ];
     }
 }

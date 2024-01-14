@@ -12,18 +12,6 @@ class Transaction extends Model
 
     protected $guarded = ['id'];
 
-    public function getDendaAttribute()
-    {
-        $batasPengembalian = Carbon::createFromFormat('d/m/Y', $this->attributes['batas_pengembalian']);
-
-        if ($batasPengembalian->isPast()) {
-            // Calculate penalty logic here, e.g., Rp. 5.000.00
-            return 'Rp. 5.000.00';
-        } else {
-            return '-';
-        }
-    }
-
     public function book()
     {
         return $this->belongsTo(Book::class);

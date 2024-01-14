@@ -20,9 +20,8 @@ class TransactionFactory extends Factory
         return [
             'user_id' => 2,
             'book_id' => $this->faker->numberBetween(1, 10),
-            'tanggal_peminjaman' => Carbon::now()->format('d/m/Y'),
-            'batas_pengembalian' => Carbon::now()->addDays(6)->format('d/m/Y'),
-            'tanggal_pengembalian' => Carbon::now()->addDays(3)->format('d/m/Y'),
+            'tanggal_peminjaman' => Carbon::now()->format('m/d/Y'),
+            'batas_pengembalian' => Carbon::now()->addDays(6)->format('m/d/Y'),
             'status' => $this->faker->randomElement(['dikembalikan', 'dipinjam', 'menunggu konfirmasi']),
         ];
     }

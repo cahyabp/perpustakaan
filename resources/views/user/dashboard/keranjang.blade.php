@@ -54,7 +54,7 @@
                             {{ $item->tanggal_pinjam }}
                         </td>
                         <td class="px-6 py-4">
-                            {{ $item->tanggal_pengembalian }}
+                            {{ $item->batas_pengembalian }}
                         </td>
                         <td class="px-6 py-4">
                             <form action="{{ route('usersremoveBookFromCart', ['id' => $item->id]) }}" method="POST">

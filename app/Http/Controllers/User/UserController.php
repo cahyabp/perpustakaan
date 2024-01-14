@@ -35,9 +35,10 @@ class UserController extends Controller
             ->where('status', 'dipinjam')
             ->get();
 
+
         $bukuMelewatiMasaPengembalian = $transactionsWithBooks->filter(function ($transaction) {
             try {
-                $batasPengembalian = Carbon::createFromFormat('d/m/Y', $transaction->batas_pengembalian);
+                $batasPengembalian = Carbon::createFromFormat('m/d/Y', $transaction->batas_pengembalian);
         
                 return $batasPengembalian->isPast();
             } catch (\Exception $e) {
@@ -105,7 +106,7 @@ class UserController extends Controller
         
         Cart::create([
          'tanggal_pinjam' => $request->tanggal_pinjam,
-         'tanggal_pengembalian' => $request->tanggal_pengembalian,
+         'batas_pengembalian' => $request->batas_pengembalian,
          'user_id' => Auth::user()->id,
          'book_id' => $id
         ]);
@@ -133,8 +134,7 @@ class UserController extends Controller
                 'user_id' => Auth::user()->id,
                 'book_id' => $book->book_id,
                 'tanggal_peminjaman' => $book->tanggal_pinjam,
-                'tanggal_pengembalian' => $book->tanggal_pengembalian,
-                'batas_pengembalian' => $book->tanggal_pengembalian
+                'batas_pengembalian' => $book->batas_pengembalian
             ]);
         }
 
@@ -146,4 +146,56 @@ class UserController extends Controller
 
 
     }
+
+    public function searchBook(Request $request)
+    {
+        if($request->ajax()) {
+
+            $books = Book::where('judul', 'LIKE', '%' . $request->search . '%')
+           ->whereHas('category')
+           ->with('category') // Eager load the category relationship
+           ->get();
+
+
+            return Response()->json($books);
+
+        }
+    }
+
+    public function searchVideo(Request $request)
+    {
+        if($request->ajax()) {
+
+            $videos = Video::where('judul', 'LIKE', '%' . $request->search . '%')
+                   ->whereHas('user')
+                   ->with('user') // Eager load the category relationship
+                   ->get();
+
+
+            return Response()->json($videos);
+
+        }
+
+    }
+
+    public function searchRiwayat(Request $request)
+    {
+        if($request->ajax()) {
+
+            $riwayat = Transaction::whereHas('book', function ($query) use ($request) {
+                $query->where('judul', 'LIKE', '%' . $request->search . '%');
+            })
+                ->with('book') // Eager load the book relationship
+                ->get();
+
+
+
+            return Response()->json($riwayat);
+
+        }
+
+    }
+
+
+
 }

@@ -81,7 +81,7 @@
                                 d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
                         </svg>
                     </div>
-                    <input type="text" id="table-search-users"
+                    <input type="text" id="search"
                         class="block pl-7 p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         placeholder="Search for users">
                 </div>
@@ -112,7 +112,7 @@
                         </th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody id="defaultVideo">
                     @foreach($videos as $index => $item)
                     <tr
                         class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
@@ -146,8 +146,9 @@
                     </tr>
                     @endforeach
                 </tbody>
+                <tbody id="searchVideo"></tbody>
             </table>
-            <div class="mt-3">
+            <div class="p-3" id="pagination">
                 {{ $videos->links() }}
             </div>
         </div>
@@ -159,4 +160,80 @@
         Copyright © Your Website 2023
     </footer> --}}
 </div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script>
+    $('#search').on('keyup', function() {
+        $value = $(this).val();
+
+
+        if ($value === '') {
+            $('#defaultVideo').show()
+            $('#searchVideo').hide()
+            $('#pagination').show()
+        } else {
+            $('#defaultVideo').hide()
+            $('#searchVideo').show()
+            $('#pagination').hide()
+        }
+
+        $.ajax({
+            type: 'GET',
+            url: `{{ route('userssearchVideo') }}`,
+            data: {
+                'search': $value
+            },
+            success: function(data) {
+                var card = '';
+
+                if (data.length === 0) {
+                    return $('#searchVideo').html('<h1>Not Found</h1>');
+                }
+
+                $.each(data, function(index, item) {
+                    card += `
+                      <tr
+                        class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                            ${index + 1}
+                        </th>
+                        <td class="px-6 py-4">
+                            <iframe width="300" height="150" src="${item.url}" title="YouTube video player"
+                                frameborder="0"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                allowfullscreen></iframe>
+                        </td>
+                        <td class="px-6 py-4">
+                            ${item.url}
+                        </td>
+                        <td class="px-6 py-4">
+                           ${item.judul}
+                        </td>
+                        <td class="px-6 py-4">
+                           ${item.penerbit}
+                        </td>
+                        <td class="px-6 py-4">
+                            ${item.tahun_terbit}
+                        </td>
+                        <td class="flex items-center px-6 py-4">
+                            <a href="/admin/editvideo/${item.id}"
+                                class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
+                            <a href="#"
+                                class="font-medium text-red-600 dark:text-red-500 hover:underline ms-3">Remove</a>
+                        </td>
+                    </tr>`
+                })
+
+                $('#searchVideo').html(card);
+
+            }
+        })
+    })
+</script>
+<script type="text/javascript">
+    $.ajaxSetup({
+        headers: {
+            'csrftoken': '{{ csrf_token() }}'
+        }
+    });
+</script>
 @endsection
