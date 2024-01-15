@@ -98,6 +98,15 @@ class DashboardController extends Controller
         $users = User::where('role', 'user')->paginate(5);
         return view('admin.dashboard.keanggotaan', compact('users'));
     }
+
+    public function deleteAnggota($id)
+    {
+        User::where('id', $id)->delete();
+
+        return redirect()->back()->with('sukses', true);
+
+    }
+
     public function peminjam()
     {
         $transactions = Transaction::orderBy('created_at')->paginate(5);

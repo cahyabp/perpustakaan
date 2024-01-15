@@ -27,6 +27,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin', 'middleware' => 'auth'], fun
     Route::get('/books', [DashboardController::class, 'show']);
     Route::get('/video', [DashboardController::class, 'video']);
     Route::get('/keanggotaan', [DashboardController::class, 'keanggotaan']);
+    Route::post('/keanggotaan/{id}', [DashboardController::class, 'deleteAnggota'])->name('deleteAnggota');
     Route::get('/peminjam', [DashboardController::class, 'peminjam']);
     Route::get('/pelaporan', [DashboardController::class, 'pelaporan']);
     Route::get('/tambahbuku', [DashboardController::class, 'tambahbuku']);

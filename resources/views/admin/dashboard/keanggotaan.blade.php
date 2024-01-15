@@ -3,6 +3,12 @@
 
 <div class="w-full overflow-x-hidden border-t flex flex-col">
     <main class="w-full h-screen flex-grow p-6">
+        @if(Session::get('sukses'))
+        <div class="p-4 mb-4 text-sm text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400"
+            role="alert">
+            <span class="font-medium">Success </span> Anggota Berhasil Dihapus
+        </div>
+        @endif
         <h1 class="text-3xl text-black pb-6">Keanggotaan</h1>
 
         <h2 class="text-2xl text-gray-500 pb-2"> Data Anggota</h2>
@@ -61,8 +67,12 @@
                         <td class="px-6 py-4">
                             {{ $item->role }} </td>
                         <td class="flex items-center px-6 py-4">
-                            <a href="#"
-                                class="font-medium text-red-600 dark:text-red-500 hover:underline ms-3">Remove</a>
+                            <form action="{{ route('admindeleteAnggota', ['id' => $item->id]) }}" method="POST">
+                                @method('POST')
+                                @csrf
+                                <button
+                                    class="font-medium text-red-600 dark:text-red-500 hover:underline ms-3">Remove</button>
+                            </form>
                         </td>
                     </tr>
                     @endforeach
@@ -83,6 +93,7 @@
 </div>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script>
+    var currentHost = window.location.origin;
     $('#search').on('keyup', function() {
         $value = $(this).val();
 
@@ -118,7 +129,7 @@
                             ${index + 1}
                         </th>
                         <td class="px-6 py-4">
-                            <img src="{{ asset('storage/' . $item->avatar) }}" class="w-36" alt="">
+                            <img src="${currentHost}/storage/${item.avatar}" class="w-36" alt="">
                         </td>
                         <td class="px-6 py-4">
                         ${item.name}  
