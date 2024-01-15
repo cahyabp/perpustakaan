@@ -45,18 +45,6 @@
 </div>
 
 
-<button id="tambahPeminjaman" type="button"
-    class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center me-2 mb-3 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-    <svg width="25px" height="25px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#ffffff">
-        <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-        <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-        <g id="SVGRepo_iconCarrier">
-            <path d="M7 12L12 12M12 12L17 12M12 12V7M12 12L12 17" stroke="#ffffff" stroke-width="2"
-                stroke-linecap="round" stroke-linejoin="round"></path>
-        </g>
-    </svg>
-    Tambah Peminjaman
-</button>
 <script>
     // Ambil elemen tombol menggunakan ID
     var tambahPeminjaman = document.getElementById('tambahPeminjaman');
