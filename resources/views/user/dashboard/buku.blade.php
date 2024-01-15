@@ -88,6 +88,7 @@
 </div>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script>
+    var currentHost = window.location.origin;
     $('#search').on('keyup', function() {
         $value = $(this).val();
 
@@ -117,13 +118,9 @@
                     card += `
                       <div
                 class="max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
-                @if(Str::contains($book->image, 'via'))
-                <img src="{{ $book->image }}" width="100%" height="300" alt="">
-                @else
-                <img src="{{ asset('storage/' . $book->image) }}" width="100%" height="300" alt="">
-                @endif
+                <img src="${currentHost}/storage/${item.image}" width="100%" height="300" alt="">
                 <div class="p-5">
-                    <a href="/users/detailbuku/{{ $book->id }}">
+                    <a href="/users/detailbuku/${item.id}">
                         <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
                            ${item.judul}
                         </h5>

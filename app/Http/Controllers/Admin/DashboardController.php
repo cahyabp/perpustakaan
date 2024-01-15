@@ -176,6 +176,13 @@ class DashboardController extends Controller
         return view('admin.dashboard.editbuku', compact('book', 'categories'));
     }
 
+    public function deleteBook($id)
+    {
+        Book::where('id', $id)->delete();
+
+        return redirect()->back()->with('sukses', true);
+    }
+
     public function editBook(Request $request, $id)
     {
         try {
@@ -244,6 +251,13 @@ class DashboardController extends Controller
             return response()->json(['errors' => $e->validator->errors()], 422);
         }
    
+    }
+
+    public function deleteVideo($id)
+    {
+        Video::where('id', $id)->delete();
+
+        return redirect()->back()->with('sukses', true);
     }
 
     public function tambahpeminjaman()

@@ -35,8 +35,10 @@ Route::group(['prefix' => 'admin', 'as' => 'admin', 'middleware' => 'auth'], fun
     Route::post('/tambahvideo', [DashboardController::class, 'createVideo'])->name('createVideo');
     Route::get('/editbuku/{id}', [DashboardController::class, 'editbuku']);
     Route::put('/editbuku/{id}', [DashboardController::class, 'editBook'])->name('editBook');
+    Route::post('/editbuku/{id}', [DashboardController::class, 'deleteBook'])->name('deleteBook');
     Route::get('/editvideo/{id}', [DashboardController::class, 'editvideo']);
     Route::put('/editvideo/{id}', [DashboardController::class, 'edit_video'])->name('editVideo');
+    Route::post('/delete-video/{id}', [DashboardController::class, 'deleteVideo'])->name('deleteVideo');
     Route::get('/tambahpeminjaman', [DashboardController::class, 'tambahpeminjaman']);
     Route::get('/editpinjaman/{id}', [DashboardController::class, 'editpinjaman']);
     Route::post('/editpinjaman/{id}', [DashboardController::class, 'updatePinjaman'])->name('updatePinjaman');

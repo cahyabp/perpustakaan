@@ -3,6 +3,12 @@
 
 <div class="w-full overflow-x-hidden border-t flex flex-col">
     <main class="w-full h-screen flex-grow p-6">
+        @if(Session::get('sukses'))
+        <div class="p-4 mb-4 text-sm text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400"
+            role="alert">
+            <span class="font-medium">Success </span> Video Berhasil Dihapus
+        </div>
+        @endif
         <h1 class="text-3xl text-black pb-6">Buku</h1>
 
         <h2 class="text-2xl text-gray-500 pb-2"> Data Buku</h2>
@@ -177,8 +183,12 @@
                         <td class="flex items-center px-6 py-4">
                             <a href="/admin/editbuku/{{ $item->id }}"
                                 class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
-                            <a href="#"
-                                class="font-medium text-red-600 dark:text-red-500 hover:underline ms-3">Remove</a>
+                            <form action="{{ route('admindeleteBook', ['id' => $item->id]) }}" method="POST">
+                                @method('POST')
+                                @csrf
+                                <button
+                                    class="font-medium text-red-600 dark:text-red-500 hover:underline ms-3">Remove</button>
+                            </form>
                         </td>
                     </tr>
                     @endforeach
@@ -199,6 +209,8 @@
 </div>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script>
+    var currentHost = window.location.origin;
+
     $('#search').on('keyup', function() {
         $value = $(this).val();
 
@@ -226,6 +238,8 @@
                     return $('#searchBook').html('<h1>Not Found</h1>');
                 }
 
+
+
                 $.each(data, function(index, item) {
                     card += `
                       <tr
@@ -234,11 +248,8 @@
                           ${index + 1}
                         </th>
                         <td class="px-6 py-4">
-                            @if(Str::contains($item->image, 'via'))
-                            <img src="{{ $item->image }}" width="100%" height="300" alt="">
-                            @else
-                            <img src="{{ asset('storage/' . $item->image) }}" width="100%" height="300" alt="">
-                            @endif
+                       
+                        <img src="${currentHost}/storage/${item.image}" width="100%" height="300" alt="">
                         </td>
                         <td class="px-6 py-4">
                             ${item.judul}
