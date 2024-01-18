@@ -6,7 +6,7 @@
         @if(Session::get('sukses'))
         <div class="p-4 mb-4 text-sm text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400"
             role="alert">
-            <span class="font-medium">Sukses!!</span> Video Berhasil Di Tambahkan
+            <span class="font-medium">Sukses!!</span> Video Berhasil Di Update
         </div>
         @endif
         <h1 class="text-3xl text-black pb-6">Edit Video</h1>
@@ -55,7 +55,7 @@
                     allowfullscreen></iframe>
             </div>
             <button type="submit"
-                class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Simpan</button>
+                class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Edit</button>
         </form>
 
     </main>

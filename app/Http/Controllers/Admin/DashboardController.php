@@ -54,6 +54,18 @@ class DashboardController extends Controller
         Auth::logout();
         return redirect('/login')->with(['msg_body' => 'You signed out!']);
     }
+    public function kategori()
+    {
+        return view('admin.dashboard.kategori');
+    }
+    public function tambahkategori()
+    {
+        return view('admin.dashboard.tambahkategori');
+    }
+    public function editkategori()
+    {
+        return view('admin.dashboard.editkategori');
+    }
     public function show()
     {
         $books = Book::orderBy('created_at', 'DESC')->paginate(5);

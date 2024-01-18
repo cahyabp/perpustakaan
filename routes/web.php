@@ -49,6 +49,9 @@ Route::group(['prefix' => 'admin', 'as' => 'admin', 'middleware' => 'auth'], fun
     Route::get('/search-video', [DashboardController::class, 'searchVideo'])->name('searchVideo');
     Route::get('/search-peminjam', [DashboardController::class, 'searchPeminjam'])->name('searchPeminjam');
     Route::get('/search-user', [DashboardController::class, 'searchUser'])->name('searchUser');
+    Route::get('/kategori', [DashboardController::class, 'kategori']);
+    Route::get('/tambahkategori', [DashboardController::class, 'tambahkategori']);
+    Route::get('/editkategori', [DashboardController::class, 'editkategori']);
 });
 
 Route::group(['prefix' => 'users', 'as' => 'users', 'middleware' => 'auth'], function () {

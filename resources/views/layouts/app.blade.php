@@ -58,27 +58,32 @@
                 <i class="fas fa-tachometer-alt mr-3"></i>
                 Dashboard
             </a>
+            <a href="/admin/kategori"
+                class="flex items-center text-white opacity-75 hover:opacity-100 py-4 pl-6 nav-item">
+                <i class="fas fa-list mr-3"></i>
+                Kategori Buku
+            </a>
             <a href="/admin/books" class="flex items-center text-white opacity-75 hover:opacity-100 py-4 pl-6 nav-item">
-                <i class="fas fa-sticky-note mr-3"></i>
+                <i class="fas fa-book mr-3"></i>
                 Buku
             </a>
             <a href="/admin/video" class="flex items-center text-white opacity-75 hover:opacity-100 py-4 pl-6 nav-item">
-                <i class="fas fa-table mr-3"></i>
+                <i class="fas fa-film mr-3"></i>
                 Video
             </a>
             <a href="/admin/keanggotaan"
                 class="flex items-center text-white opacity-75 hover:opacity-100 py-4 pl-6 nav-item">
-                <i class="fas fa-align-left mr-3"></i>
+                <i class="fas fa-user mr-3"></i>
                 Keanggotaan
             </a>
             <a href="/admin/peminjam"
                 class="flex items-center text-white opacity-75 hover:opacity-100 py-4 pl-6 nav-item">
-                <i class="fas fa-tablet-alt mr-3"></i>
+                <i class="fas fa-file mr-3"></i>
                 Data Peminjaman
             </a>
             <a href="/admin/pelaporan"
                 class="flex items-center text-white opacity-75 hover:opacity-100 py-4 pl-6 nav-item">
-                <i class="fas fa-calendar mr-3"></i>
+                <i class="fas fa-chart-pie mr-3"></i>
                 Pelaporan
             </a>
         </nav>
@@ -125,29 +130,34 @@
                     <i class="fas fa-tachometer-alt mr-3"></i>
                     Dashboard
                 </a>
+                <a href="/admin/kategori"
+                    class="flex items-center text-white opacity-75 hover:opacity-100 py-2 pl-4 nav-item">
+                    <i class="fas fa-list mr-3"></i>
+                    Kategori Buku
+                </a>
                 <a href="/admin/books"
                     class="flex items-center text-white opacity-75 hover:opacity-100 py-2 pl-4 nav-item">
-                    <i class="fas fa-sticky-note mr-3"></i>
+                    <i class="fas fa-book mr-3"></i>
                     Buku
                 </a>
                 <a href="/admin/video"
                     class="flex items-center text-white opacity-75 hover:opacity-100 py-2 pl-4 nav-item">
-                    <i class="fas fa-table mr-3"></i>
+                    <i class="fas fa-film mr-3"></i>
                     Video
                 </a>
                 <a href="/admin/keanggotaan"
                     class="flex items-center text-white opacity-75 hover:opacity-100 py-2 pl-4 nav-item">
-                    <i class="fas fa-align-left mr-3"></i>
+                    <i class="fas fa-user mr-3"></i>
                     Keanggotaan
                 </a>
                 <a href="/admin/peminjam"
                     class="flex items-center text-white opacity-75 hover:opacity-100 py-2 pl-4 nav-item">
-                    <i class="fas fa-tablet-alt mr-3"></i>
+                    <i class="fas fa-file mr-3"></i>
                     Data Peminjaman
                 </a>
                 <a href="/admin/pelaporan"
                     class="flex items-center text-white opacity-75 hover:opacity-100 py-2 pl-4 nav-item">
-                    <i class="fas fa-calendar mr-3"></i>
+                    <i class="fas fa-chart-pie mr-3"></i>
                     Pelaporan
                 </a>
                 <div class="flex items-center text-white opacity-75 hover:opacity-100 py-2 pl-4 nav-item">
