@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Book;
 use App\Models\Cart;
+use App\Models\Category;
 use App\Models\Transaction;
 use App\Models\User;
 use App\Models\Video;
@@ -25,15 +26,28 @@ class UserController extends Controller
         $videos = Video::orderBy('created_at', 'DESC')->get();
         return view('user.dashboard.video', compact('videos'));
     }
-    public function buku()
+    public function buku(Request $request)
     {
-        $books = Book::orderBy('created_at', 'DESC')->get();
+        
         $totalBook = Book::count();
+        $categories = Category::all();
 
         $transactionsWithBooks = Transaction::with('book')
             ->where('user_id', Auth::user()->id)
             ->where('status', 'dipinjam')
             ->get();
+
+
+        if($request->category) {
+            $books = Book::whereHas('category', function ($query) use ($request) {
+                $query->where('nama_kategori', 'LIKE', '%' . $request->category . '%');
+            })
+                        ->with('category')
+                        ->get();
+
+        } else {
+            $books = Book::orderBy('created_at', 'DESC')->get();
+        }
 
 
         $bukuMelewatiMasaPengembalian = $transactionsWithBooks->filter(function ($transaction) {
@@ -49,11 +63,23 @@ class UserController extends Controller
             return $transaction->book;
         });
 
-        return view('user.dashboard.buku', compact('books', 'totalBook', 'bukuMelewatiMasaPengembalian'));
+        $pinjam2Book = Transaction::where('user_id', Auth::user()->id)->where('status', 'dipinjam')->count() === 2;
+
+        return view('user.dashboard.buku', compact('books', 'totalBook', 'bukuMelewatiMasaPengembalian', 'pinjam2Book', 'categories'));
     }
-    public function riwayat()
+    public function riwayat(Request $request)
     {
-        $transactions = Transaction::where('user_id', Auth::user()->id)->orderBy('created_at', 'DESC')->paginate(5);
+        if($request->q) {
+            $transactions = Transaction::where('user_id', Auth::user()->id)->whereHas('book', function ($query) use ($request) {
+                $query->where('judul', 'LIKE', '%' . $request->q . '%');
+            })
+            ->with('book')
+            ->get();
+
+        } else {
+            $transactions = Transaction::where('user_id', Auth::user()->id)->orderBy('created_at', 'DESC')->paginate(5);
+        }
+        
         return view('user.dashboard.riwayat', compact('transactions'));
     }
     public function profil()
@@ -122,8 +148,11 @@ class UserController extends Controller
     ->where('batas_pengembalian', '<', Carbon::now()->format('d/m/Y'))
     ->get();
 
+        $pinjam2Book = Transaction::where('user_id', Auth::user()->id)->where('status', 'dipinjam')->count() === 2;
 
-        return view('user.dashboard.detailbuku', compact('book', 'cartFull', 'bukuBelumDikembalikan'));
+
+
+        return view('user.dashboard.detailbuku', compact('book', 'cartFull', 'bukuBelumDikembalikan', 'pinjam2Book'));
     }
 
     public function checkout()
@@ -151,10 +180,14 @@ class UserController extends Controller
     {
         if($request->ajax()) {
 
-            $books = Book::where('judul', 'LIKE', '%' . $request->search . '%')
-           ->whereHas('category')
-           ->with('category') // Eager load the category relationship
-           ->get();
+            $books = Book::where(function ($query) use ($request) {
+                $query->where('judul', 'LIKE', '%' . $request->search . '%')
+                    ->orWhere('penerbit', 'LIKE', '%' . $request->search . '%');
+            })->whereHas('category')
+                    ->with('category') // Eager load the category relationship
+                    ->get();
+
+
 
 
             return Response()->json($books);
@@ -166,10 +199,13 @@ class UserController extends Controller
     {
         if($request->ajax()) {
 
-            $videos = Video::where('judul', 'LIKE', '%' . $request->search . '%')
-                   ->whereHas('user')
-                   ->with('user') // Eager load the category relationship
-                   ->get();
+            $videos = Video::where(function ($query) use ($request) {
+                $query->where('judul', 'LIKE', '%' . $request->search . '%')
+                    ->orWhere('penerbit', 'LIKE', '%' . $request->search . '%');
+            })->whereHas('user')
+                    ->with('user') // Eager load the category relationship
+                    ->get();
+
 
 
             return Response()->json($videos);
@@ -177,25 +213,4 @@ class UserController extends Controller
         }
 
     }
-
-    public function searchRiwayat(Request $request)
-    {
-        if($request->ajax()) {
-
-            $riwayat = Transaction::whereHas('book', function ($query) use ($request) {
-                $query->where('judul', 'LIKE', '%' . $request->search . '%');
-            })
-                ->with('book') // Eager load the book relationship
-                ->get();
-
-
-
-            return Response()->json($riwayat);
-
-        }
-
-    }
-
-
-
 }

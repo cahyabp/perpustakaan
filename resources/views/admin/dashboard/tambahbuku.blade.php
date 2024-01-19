@@ -4,6 +4,16 @@
 <div class="w-full overflow-x-hidden border-t flex flex-col mb-5">
 
     <main class="w-full h-screen flex-grow p-6">
+        @if ($errors->validationErrors->any())
+        <div class="alert alert-danger">
+            <ul>
+                @foreach ($errors->validationErrors->all() as $error)
+                <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+        @endif
+
         @if(Session::get('sukses'))
         <div class="p-4 mb-4 text-sm text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400"
             role="alert">

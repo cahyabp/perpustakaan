@@ -51,7 +51,9 @@ Route::group(['prefix' => 'admin', 'as' => 'admin', 'middleware' => 'auth'], fun
     Route::get('/search-user', [DashboardController::class, 'searchUser'])->name('searchUser');
     Route::get('/kategori', [DashboardController::class, 'kategori']);
     Route::get('/tambahkategori', [DashboardController::class, 'tambahkategori']);
-    Route::get('/editkategori', [DashboardController::class, 'editkategori']);
+    Route::post('/tambahkategori', [DashboardController::class, 'createCategory'])->name('createCategory');
+    Route::get('/editkategori/{id}', [DashboardController::class, 'editkategori']);
+    Route::post('/editkategori/{id}', [DashboardController::class, 'updateCategory'])->name('updateCategory');
 });
 
 Route::group(['prefix' => 'users', 'as' => 'users', 'middleware' => 'auth'], function () {
@@ -72,6 +74,4 @@ Route::group(['prefix' => 'users', 'as' => 'users', 'middleware' => 'auth'], fun
     Route::get('/pesan-buku', [UserController::class, 'checkout'])->name('checkout');
     Route::get('/search-book', [UserController::class, 'searchBook'])->name('searchBook');
     Route::get('/search-video', [UserController::class, 'searchVideo'])->name('searchVideo');
-    Route::get('/search-riwayat', [UserController::class, 'searchRiwayat'])->name('searchRiwayat');
-
 });

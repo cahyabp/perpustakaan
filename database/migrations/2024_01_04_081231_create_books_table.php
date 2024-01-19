@@ -14,7 +14,7 @@ return new class extends Migration {
             $table->id();
             $table->unsignedBigInteger('category_id');
             $table->string('image');
-            $table->string('judul');
+            $table->string('judul')->unique();
             $table->string('penulis');
             $table->string('penerbit');
             $table->text('uraian');

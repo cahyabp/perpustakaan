@@ -22,7 +22,7 @@ class BookFactory extends Factory
             'judul' => $this->faker->sentence,
             'penulis' => $this->faker->name,
             'penerbit' => $this->faker->company,
-            'uraian' => $this->faker->paragraph,
+            'uraian' => $this->faker->paragraphs(2, true),
             'isbn' => $this->faker->isbn13,
             'stock' => $this->faker->numberBetween(1, 100),
             'tahun_terbit' => $this->faker->year(),

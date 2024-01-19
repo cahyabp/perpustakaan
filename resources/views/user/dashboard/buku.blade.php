@@ -6,7 +6,7 @@
         <div
             class="flex items-center justify-between flex-column flex-wrap md:flex-row space-y-4 md:space-y-0 pb-4 bg-gray-100 dark:bg-gray-900">
             <h1 class="text-4xl font-bold text-black pb-6">Koleksi Buku</h1>
-            <div class="flex items-center gap-12 flex-column">
+            <div class="flex flex-col md:flex-row items-center gap-3 md:gap-12 flex-column">
                 <span class="">Total buku: {{ $totalBook }}</span>
                 <label for="table-search" class="sr-only">Search</label>
                 <div class="relative">
@@ -24,9 +24,20 @@
                 </div>
             </div>
         </div>
-        <div class="pb-4">
-            <button type="button" class="focus:outline-none text-white bg-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:ring-yellow-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:focus:ring-yellow-900">Yellow</button>
-            <button type="button" class="focus:outline-none text-white bg-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:ring-yellow-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:focus:ring-yellow-900">Yellow</button>
+        <div class="pb-4 flex flex-wrap">
+            <a href="/users/buku"
+                class="focus:outline-none text-white bg-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:ring-yellow-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:focus:ring-yellow-900">
+                Semua Kategori
+            </a>
+            @foreach($categories as $category)
+            <form>
+                <input type="hidden" name="category" value="{{ $category->nama_kategori }}">
+                <button type="submit"
+                    class="focus:outline-none text-white bg-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:ring-yellow-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:focus:ring-yellow-900">
+                    {{ $category->nama_kategori }}
+                </button>
+            </form>
+            @endforeach
         </div>
 
         @if(!empty($bukuMelewatiMasaPengembalian))
@@ -38,9 +49,14 @@
         </div>
         @endforeach
         @endif
+        @if($pinjam2Book)
+        <div class="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
+            <span class="font-medium">Peringatan!!</span> Kamu Sudah Meminjam 2 Buku dan Belum Dikembalikan
+        </div>
+        @endif
 
-        <div class="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5" id="defaultBook">
-            @foreach($books as $book)
+        <div class="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5" id="defaultBook">
+            @forelse($books as $book)
             <div
                 class="max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
                 @if(Str::contains($book->image, 'via'))
@@ -83,7 +99,9 @@
 
                 </div>
             </div>
-            @endforeach
+            @empty
+            <h1>Tidak ada buku di kategori ini</h1>
+            @endforelse
         </div>
 
         <div class="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5" id="searchBook">

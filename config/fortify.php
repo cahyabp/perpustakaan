@@ -136,7 +136,9 @@ return [
         Features::resetPasswords(),
         // Features::emailVerification(),
         Features::updateProfileInformation(),
-        Features::updatePasswords(),
+        Features::updatePasswords([
+            'confirmPassword' => true,
+        ]),
         Features::twoFactorAuthentication([
             'confirm' => true,
             'confirmPassword' => true,

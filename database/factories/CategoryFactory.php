@@ -18,7 +18,6 @@ class CategoryFactory extends Factory
     {
         return [
             'nama_kategori' => $this->faker->word,
-            'image' => $this->faker->imageUrl(),
         ];
     }
 }

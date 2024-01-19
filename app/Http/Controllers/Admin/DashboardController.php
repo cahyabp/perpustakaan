@@ -54,18 +54,50 @@ class DashboardController extends Controller
         Auth::logout();
         return redirect('/login')->with(['msg_body' => 'You signed out!']);
     }
-    public function kategori()
+    public function kategori(Request $request)
     {
-        return view('admin.dashboard.kategori');
+        if($request->q) {
+            $data = Category::where('nama_kategori', 'LIKE', '%' . $request->q . '%')->get();
+        } else {
+            $data = Category::orderBy('created_at', "DESC")->paginate(10);
+        }
+        return view('admin.dashboard.kategori', compact('data'));
     }
     public function tambahkategori()
     {
         return view('admin.dashboard.tambahkategori');
     }
-    public function editkategori()
+
+    public function createCategory(Request $request)
     {
-        return view('admin.dashboard.editkategori');
+        $validateData = $request->validate([
+           'nama_kategori' => 'string'
+        ]);
+
+        Category::create($validateData);
+
+        return redirect()->back()->with('sukses', true);
+
     }
+
+    public function editkategori($id)
+    {
+        $data = Category::find($id);
+        return view('admin.dashboard.editkategori', compact('data'));
+    }
+
+    public function updateCategory(Request $request, $id)
+    {
+        $validateData = $request->validate([
+           'nama_kategori' => 'string'
+        ]);
+
+        Category::where('id', $id)->update($validateData);
+
+        return redirect()->back()->with('sukses', true);
+
+    }
+
     public function show()
     {
         $books = Book::orderBy('created_at', 'DESC')->paginate(5);
@@ -162,19 +194,20 @@ class DashboardController extends Controller
 
     public function createBook(Request $request)
     {
-        $validateData = $request->validate([
-            'category_id'   => 'required|exists:categories,id',
-            'judul'         => 'required|string|max:255',
-            'penulis'       => 'required|string|max:255',
-            'penerbit'      => 'required|string|max:255',
-            'uraian'        => 'required|string',
-            'isbn'          => 'required|string|max:20',
-            'stock'         => 'required|integer|min:0',
-            'sumber'        => 'required|string|max:255',
-            'tahun_terbit'  => 'required|string|max:4',
-            'kode_tempat'   => 'required|string|max:255',
-            'image'         => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
-        ]);
+        $validateData = $request->validateWithBag('validationErrors', [
+        'category_id'   => 'required|exists:categories,id',
+        'judul'         => 'required|string|max:255|unique:books,judul',
+        'penulis'       => 'required|string|max:255',
+        'penerbit'      => 'required|string|max:255',
+        'uraian'        => 'required|string',
+        'isbn'          => 'required|string|max:20',
+        'stock'         => 'required|integer|min:0',
+        'sumber'        => 'required|string|max:255',
+        'tahun_terbit'  => 'required|string|max:4',
+        'kode_tempat'   => 'required|string|max:255',
+        'image'         => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+    ]);
+
 
         if($request->file('image')) {
             $validateData['image'] = $request->file('image')->store('images', 'public');

@@ -15,8 +15,10 @@
         }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.1/datepicker.min.js"></script>
+    <script src="https://unpkg.com/jsbarcode@latest/dist/JsBarcode.all.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.1/flowbite.min.css" rel="stylesheet" />
 </head>
-<body class="bg-gray-100 font-family-karla">
+<body class="bg-gray-100 font-family-karla overflow-x-hidden">
     <nav class="bg-white w-screen border-gray-200 dark:bg-gray-900">
         <div class="w-full flex flex-wrap items-center justify-between mx-auto p-4">
             <a class="flex items-center pl-3 space-x-3 rtl:space-x-reverse">
@@ -111,5 +113,6 @@
         </div>
     </footer>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.1/flowbite.min.js"></script>
 </body>
 </html>
