@@ -373,12 +373,23 @@ class DashboardController extends Controller
 
     public function searchBook(Request $request)
     {
-        if($request->ajax()) {
+        $keyword = $request->search;
 
-            $books = Book::where('judul', 'LIKE', '%' . $request->search . '%')
-                   ->whereHas('category')
-                   ->with('category') // Eager load the category relationship
-                   ->get();
+
+        if($request->ajax()) {
+            $books = Book::where(function ($query) use ($keyword) {
+                $query->where('judul', 'LIKE', '%' . $keyword . '%')
+                    ->orWhere('penulis', 'LIKE', '%' . $keyword . '%')
+                    ->orWhere('penerbit', 'LIKE', '%' . $keyword . '%')
+                    ->orWhere('sumber', 'LIKE', '%' . $keyword . '%')
+                    ->orWhereHas('category', function ($categoryQuery) use ($keyword) {
+                        $categoryQuery->where('nama_kategori', 'LIKE', '%' . $keyword . '%');
+                    });
+            })
+            ->whereHas('category')
+            ->with('category')
+            ->get();
+
 
 
             return Response()->json($books);
@@ -389,12 +400,15 @@ class DashboardController extends Controller
 
     public function searchVideo(Request $request)
     {
+        $keyword = $request->search;
+
         if($request->ajax()) {
 
-            $videos = Video::where('judul', 'LIKE', '%' . $request->search . '%')
-                   ->whereHas('user')
-                   ->with('user') // Eager load the category relationship
-                   ->get();
+            $videos = Video::where(function ($query) use ($keyword) {
+                $query->where('judul', 'LIKE', '%' . $keyword . '%')
+                    ->orWhere('penerbit', 'LIKE', '%' . $keyword . '%')
+                    ->orWhere('sumber', 'LIKE', '%' . $keyword . '%');
+            })->whereHas('user') ->with('user')->get();
 
 
             return Response()->json($videos);
@@ -405,13 +419,19 @@ class DashboardController extends Controller
 
     public function searchPeminjam(Request $request)
     {
-        if($request->ajax()) {
 
+        if($request->ajax()) {
             $peminjam = Transaction::whereHas('user', function ($query) use ($request) {
-                $query->where('name', 'LIKE', '%' . $request->search . '%');
+                $query->where('name', 'LIKE', '%' . $request->search . '%')
+                    ->orWhere('nis', 'LIKE', '%' . $request->search . '%');
             })
-                ->with(['user', 'book']) // Eager load both user and book relationships
+                ->orWhereHas('book', function ($bookQuery) use ($request) {
+                    $bookQuery->where('judul', 'LIKE', '%' . $request->search . '%');
+                })
+                ->with(['user', 'book'])
                 ->get();
+
+
                 
             return Response()->json($peminjam);
 

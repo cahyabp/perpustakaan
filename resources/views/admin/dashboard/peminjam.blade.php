@@ -191,7 +191,7 @@
 
         if ($value === '') {
             $('#defaultPeminjam').show()
-            $('#searchPeminjam').hide()
+            $('#searchPeminjam').html('')
             $('#pagination').show()
         } else {
             $('#defaultPeminjam').hide()
