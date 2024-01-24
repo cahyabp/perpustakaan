@@ -98,6 +98,14 @@ class DashboardController extends Controller
 
     }
 
+    public function deleteCategory($id)
+    {
+        Category::where('id', $id)->delete();
+
+        return redirect()->back()->with('sukses', true);
+
+    }
+
     public function show()
     {
         $books = Book::orderBy('created_at', 'DESC')->paginate(5);

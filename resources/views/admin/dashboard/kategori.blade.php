@@ -3,6 +3,12 @@
 
 <div class="w-full overflow-x-hidden border-t flex flex-col">
     <main class="w-full h-screen flex-grow p-6">
+         @if(Session::get('sukses'))
+        <div class="p-4 mb-4 text-sm text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400"
+            role="alert">
+            <span class="font-medium">Success </span> Kategori Berhasil Dihapus
+        </div>
+        @endif
         <h1 class="text-3xl text-black pb-6">Kategori Buku</h1>
 
         <h2 class="text-2xl text-gray-500 pb-2"> Data Kategori Buku</h2>
@@ -76,8 +82,11 @@
                         <td class="flex items-center px-6 py-4">
                             <a href="/admin/editkategori/{{ $category->id }}"
                                 class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
-                            <button
+                            <form action="{{ route('admindeleteCategory', ['id' => $category->id]) }}" method="POST">
+                                @csrf
+                                <button type="submit"
                                 class="font-medium text-red-600 dark:text-red-500 hover:underline ms-3">Remove</button>
+                            </form>
                         </td>
                     </tr>
                     @empty

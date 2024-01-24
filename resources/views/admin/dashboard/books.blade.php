@@ -6,7 +6,7 @@
         @if(Session::get('sukses'))
         <div class="p-4 mb-4 text-sm text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400"
             role="alert">
-            <span class="font-medium">Success </span> Video Berhasil Dihapus
+            <span class="font-medium">Success </span> Buku Berhasil Dihapus
         </div>
         @endif
         <h1 class="text-3xl text-black pb-6">Buku</h1>

@@ -54,6 +54,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin', 'middleware' => 'auth'], fun
     Route::post('/tambahkategori', [DashboardController::class, 'createCategory'])->name('createCategory');
     Route::get('/editkategori/{id}', [DashboardController::class, 'editkategori']);
     Route::post('/editkategori/{id}', [DashboardController::class, 'updateCategory'])->name('updateCategory');
+    Route::post('/deletekategori/{id}', [DashboardController::class, 'deleteCategory'])->name('deleteCategory');
 });
 
 Route::group(['prefix' => 'users', 'as' => 'users', 'middleware' => 'auth'], function () {
